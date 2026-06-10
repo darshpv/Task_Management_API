@@ -1,0 +1,36 @@
+services:
+
+  task_postgres:
+    image: postgres:16
+    container_name: task_management_postgres
+
+    environment:
+      POSTGRES_USER: taskuser
+      POSTGRES_PASSWORD: taskpass
+      POSTGRES_DB: task_management_db
+  
+    ports:
+      - "5436:5432"
+  
+    volumes:
+      - task_management_db_data:/var/lib/postgresql/data                
+  
+    restart: unless-stopped
+
+  pgweb_new:
+    image: sosedoff/pgweb:latest
+    container_name: task_pgweb_new
+
+    depends_on:
+      - task_postgres
+
+    environment:
+      DATABASE_URL: postgres://taskuser:taskpass@task_postgres:5432/task_management_db?sslmode=disable
+
+    ports:
+      - "8086:8081"
+    
+    restart: unless-stopped
+
+volumes:
+  task_management_db_data:
