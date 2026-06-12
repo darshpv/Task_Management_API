@@ -9,7 +9,6 @@ class TaskCreateRequest(BaseModel):
     assigned_to: int
 
 class TaskUpdateRequest(BaseModel):
-    id: int
     title: Optional[str] = Field(
         None,
         min_length=5,
@@ -25,4 +24,9 @@ class TaskUpdateRequest(BaseModel):
     
 class TaskResponse(BaseModel):
     id: int
+    title: str
+    description: str
+    status: TaskStatus
+    assigned_to: int
+
     model_config = ConfigDict(from_attributes=True)

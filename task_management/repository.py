@@ -8,6 +8,7 @@ from schemas import TaskCreateRequest
 
 
 class TaskRepository:
+
     async def create_task(self, db: AsyncSession, task_data: Task):
         try:
             new_task = Task(
@@ -49,13 +50,11 @@ class TaskRepository:
 
             for field, value in update_data:
                 if value is not None:
-                    task.setattr(task, field, value)
+                    setattr(task, field, value)
 
             await db.commit()
             await db.refresh(task)
 
-            return task
-        
         except Exception as e:
             await db.rollback()
             raise e
@@ -86,6 +85,22 @@ class TaskRepository:
             tasks = result.scalars().all()
 
             return tasks
+        
+        except Exception as e:
+            await db.rollback()
+            raise e
+
+class UserRepository:
+
+    async def get_user_by_id(self, user_id: int, db: AsyncSession):
+        try:
+            result = await db.execute(
+                select(User).where(User.id == user_id)
+            )
+            result_user = result.scalar_one_or_none()
+            # if not result_task:
+            #     raise HTTPException(detail="Task not found")
+            return result_user
         
         except Exception as e:
             await db.rollback()
