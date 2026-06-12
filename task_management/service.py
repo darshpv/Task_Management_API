@@ -20,7 +20,7 @@ async def create_task(db: AsyncSession, task_data: TaskCreateRequest):
         logger.error("Task creation failed (assigned_to=None)")
         raise HTTPException(status_code=400, detail="Task must be assigned to a user")
 
-    user = await userRepository.get_user_by_id(db, task_data.assigned_to)
+    user = await userRepository.get_user_by_id(db=db, user_id=task_data.assigned_to)
 
     if not user:
         logger.error(f"Invalid assignee (user_id={task_data.assigned_to})")
@@ -33,7 +33,7 @@ async def create_task(db: AsyncSession, task_data: TaskCreateRequest):
         assigned_to=task_data.assigned_to
     )
 
-    created_task = await taskRepository.create_task(db=db, task=task)
+    created_task = await taskRepository.create_task(db=db, task_data=task)
 
     logger.info(f"Task created successfully (task_id={created_task.id})")
 
@@ -64,7 +64,7 @@ async def update_task(db: AsyncSession, task_id: int, task_data: TaskUpdateReque
     update_data = task_data.model_dump(exclude_unset=True)
 
     if "assigned_to" in update_data and update_data["assigned_to"] is not None:
-        user = await userRepository.get_user_by_id(db, update_data["assigned_to"])
+        user = await userRepository.get_user_by_id(db=db, user_id=task.assigned_to)
         if not user:
             logger.error(f"Invalid assignee during update (user_id={update_data['assigned_to']})")
             raise HTTPException(status_code=400, detail="Invalid user assigned")
@@ -89,7 +89,7 @@ async def delete_task(db: AsyncSession, task_id: int):
         logger.error(f"Task not found for deletion (task_id={task_id})")
         raise HTTPException(status_code=404, detail="Task not found")
 
-    if task.status == TaskStatus.completed:
+    if task.status == TaskStatus.COMPLETED:
         logger.error(f"Cannot delete completed task (task_id={task_id})")
         raise HTTPException(status_code=400, detail="Cannot delete completed task")
 

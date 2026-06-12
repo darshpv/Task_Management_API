@@ -2,9 +2,9 @@ from http.client import HTTPException
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from models import Task, User, TaskStatus
+from task_management.models import Task, User, TaskStatus
 from core.database import SessionLocal
-from schemas import TaskCreateRequest
+from task_management.schemas import TaskCreateRequest
 
 
 class TaskRepository:
@@ -20,6 +20,8 @@ class TaskRepository:
             db.add(new_task)
             await db.commit()
             await db.refresh(new_task)
+
+            return new_task
 
         except Exception as e:
             await db.rollback()
@@ -48,13 +50,14 @@ class TaskRepository:
 
             task = result.scalar_one()
 
-            for field, value in update_data:
+            for field, value in update_data.items():
                 if value is not None:
                     setattr(task, field, value)
 
             await db.commit()
             await db.refresh(task)
 
+            return task
         except Exception as e:
             await db.rollback()
             raise e

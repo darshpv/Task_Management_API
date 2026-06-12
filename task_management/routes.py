@@ -50,4 +50,4 @@ async def delete_task(
 async def list_tasks(
     db: AsyncSession = Depends(get_db_session)
 ):
-    return await service.list_tasks()
+    return await service.list_tasks(db=db)

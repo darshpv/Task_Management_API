@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
-from models import TaskStatus
+from task_management.models import TaskStatus
 
 class TaskCreateRequest(BaseModel):
     title: str = Field(..., min_length=5, max_length=100)
