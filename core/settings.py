@@ -1,3 +1,14 @@
-from settings import DATABASE_URL as db_url;
+from pydantic_settings import BaseSettings
 
-DATABASE_URL=db_url;
+
+class Settings(BaseSettings):
+    DATABASE_URL: str
+    DATABASE_SYNC_URL: str
+    APP_ENV: str
+    LOG_LEVEL: str
+
+    class Config:
+        env_file = ".env"
+
+
+settings = Settings()

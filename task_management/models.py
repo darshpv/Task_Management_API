@@ -1,6 +1,6 @@
 from enum import Enum
 from core.database import Base
-from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, func
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Enum as SQLAlchemyEnum, func
 
 class UserRole(str, Enum):
     ADMIN = "admin"
@@ -16,13 +16,14 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, nullable=False)
     email = Column(String, nullable=False)
-    role = Column(Enum(UserRole), nullable=False)
+    role = Column(SQLAlchemyEnum(UserRole), nullable=False)
 
 class Task(Base):
+    __tablename__ = "tasks"
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
     description = Column(String, nullable=True)
-    status = Column(Enum(TaskStatus), nullable=False)
+    status = Column(SQLAlchemyEnum(TaskStatus), nullable=False)
     assigned_to = Column(Integer, ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime(timezone=False), server_default=func.now(), nullable=False)
 
