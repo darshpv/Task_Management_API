@@ -175,3 +175,17 @@ null
 **422**: Validation Error<br>
 **400**: User Assignment Error<br>
 **404**: Not Found
+
+---
+
+## Architecture Diagram
+
+[ Client Request ]<br>
+↓<br>
+[ FastAPI Route Layer ]<br>
+↓<br>
+[ Service Layer (Business Logic) ]<br>
+↓<br>
+[ Repository Layer (DB Operations) ]<br>
+↓<br>
+[ PostgreSQL Database ]
